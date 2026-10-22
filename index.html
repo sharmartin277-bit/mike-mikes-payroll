@@ -680,7 +680,7 @@
               '<button class="btn-small" type="button" id="btn-dl">' + ICON_DL + "Download stub</button>" +
               '<button class="btn-small" type="button" id="btn-share-email">' + ICON_MAIL + "Share via Email</button>" +
               '<button class="btn-small alt" type="button" id="btn-share-text">' + ICON_MSG + "Share via Text</button>" +
-              '<span style="align-self:center;font-size:0.85rem;color:var(--muted)">On a phone, these buttons open the share sheet with the stub file ready to save or send — pick Mail, Messages, or Save to Files. On a computer, Download saves the stub file and Share via Email opens your mail app with the summary filled in.</span>' +
+              '<span style="align-self:center;font-size:0.85rem;color:var(--muted)">On a phone, these buttons open the share sheet with the stub as a PDF file ready to save or send — pick Mail, Messages, or Save to Files. On a computer, Download saves the stub PDF and Share via Email opens your mail app with the summary filled in.</span>' +
               '<p id="stub-status" role="status" style="flex-basis:100%;margin:0.15rem 0 0;font-size:0.88rem;font-weight:600;color:var(--good)"></p>' +
             "</div>" +
             stubHTML(emp, entry) +
@@ -696,43 +696,151 @@
         document.getElementById("btn-share-text").addEventListener("click", function () { shareStubText(emp, entry); });
       }
       function stubFileName(emp, entry) {
-        return "paystub-" + emp.name.replace(/\s+/g, "-").toLowerCase() + "-" + entry.check.payDate + ".html";
+        return "paystub-" + emp.name.replace(/\s+/g, "-").toLowerCase() + "-" + entry.check.payDate + ".pdf";
       }
-      function stubFileHTML(emp, entry) {
-        return '<!doctype html><html lang="en"><head><meta charset="utf-8"/><title>Pay stub — ' + esc(emp.name) + " — " + esc(entry.check.payDate) + '</title><style>' +
-          "body{margin:24px;background:#fff;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif}" +
-          ".stub{background:#fff;color:#14101c;border:1px solid #cfc6de;border-radius:4px;max-width:820px;margin:0 auto;overflow:hidden}" +
-          ".stub-band{background:#4a0878;color:#fff;padding:1rem 1.3rem;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}" +
-          ".stub-band .co{font-weight:800;font-size:1.3rem}" +
-          ".stub-band-r{text-align:right}.stub-band .doc-title{font-weight:800;font-size:1.15rem;letter-spacing:.1em}.stub-band .doc-date{font-size:.88rem;color:#e2d4f7;margin-top:.2rem}" +
-          ".stub-body{padding:1rem 1.3rem 1.2rem}" +
-          ".stub-sec{background:#e8e8eb;color:#26222e;font-weight:800;font-size:.76rem;letter-spacing:.09em;text-transform:uppercase;padding:.42rem .6rem;margin-bottom:.55rem}" +
-          ".stub-info{display:grid;grid-template-columns:1fr 1fr;gap:.4rem 1.6rem;margin-bottom:1.05rem}" +
-          ".stub-info .kv{display:flex;gap:.5rem;font-size:.92rem;padding:.14rem .1rem}.stub-info .kv .k{font-weight:700;color:#4c445c;min-width:6.4rem}" +
-          ".stub-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:.92rem;margin-bottom:1.05rem}" +
-          ".stub-table th{text-align:right;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:#6b617a;padding:.3rem .5rem;border-bottom:1.5px solid #d9d2e6}.stub-table th:first-child{text-align:left}" +
-          ".stub-table td{text-align:right;padding:.36rem .5rem;border-bottom:1px solid #eee9f6}.stub-table td:first-child{text-align:left}" +
-          ".stub-earn th:nth-child(1){width:32%}.stub-earn th:nth-child(2){width:15%}.stub-earn th:nth-child(3){width:13%}.stub-earn th:nth-child(4){width:20%}.stub-earn th:nth-child(5){width:20%}" +
-          ".stub-tax th:nth-child(1){width:60%}.stub-tax th:nth-child(2){width:20%}.stub-tax th:nth-child(3){width:20%}" +
-          ".stub-table tr.band-total td{background:#e7dbf7;font-weight:800;border-bottom:0;color:#2c1150}" +
-          ".stub-netband{display:grid;grid-template-columns:60% 20% 20%;align-items:center;background:#4a0878;color:#fff;padding:.65rem .5rem;margin-bottom:1.05rem}" +
-          ".stub-netband .nk{font-weight:800;letter-spacing:.08em;font-size:.95rem}.stub-netband .nv{font-weight:800;text-align:right;font-size:1.05rem}" +
-          ".stub-footboxes{display:grid;grid-template-columns:1fr 1fr;gap:.4rem 1.6rem}" +
-          ".stub-box{border:1px solid #e0d9ec}.stub-box .stub-sec{margin-bottom:0}.stub-box p{margin:0;padding:.55rem .6rem .65rem;font-size:.88rem}" +
-          ".pill{display:inline-block;padding:.12rem .55rem;border-radius:999px;font-size:.72rem;font-weight:700;background:#f1e7fa;color:#6a0dad}" +
-          "@media(max-width:640px){.stub-info,.stub-footboxes{grid-template-columns:1fr}.stub-band{flex-direction:column}.stub-band-r{text-align:left}.stub-table{font-size:.76rem}.stub-table th{font-size:.6rem;letter-spacing:.03em;padding:.3rem .35rem}.stub-table td{padding:.36rem .35rem}.stub-earn th:nth-child(1){width:26%}.stub-earn th:nth-child(2){width:13%}.stub-earn th:nth-child(3){width:13%}.stub-earn th:nth-child(4){width:24%}.stub-earn th:nth-child(5){width:24%}.stub-tax th:nth-child(1){width:52%}.stub-tax th:nth-child(2){width:24%}.stub-tax th:nth-child(3){width:24%}.stub-netband{grid-template-columns:46% 27% 27%;padding:.6rem .35rem}.stub-netband .nv{font-size:.92rem}}" +
-          "</style></head><body>" + stubHTML(emp, entry) +
-          '<p style="max-width:820px;margin:14px auto 0;font-size:12px;color:#6b617a">Generated from the Mike Mike\'s Mobile Mechanics Payroll Portal. Print this page (Ctrl/Cmd + P) for a paper copy.</p>' +
-          "</body></html>";
+
+      /* ============ Stub PDF generator ============
+         The stub is delivered as a real PDF, not an HTML file: iOS Safari
+         degrades an HTML file handed to the share sheet into a plain-text
+         scrap (it saved a .txt containing only the share title), while a
+         PDF passes through intact — Save to Files stores it, Mail attaches
+         it, and it opens as the formatted PAY STATEMENT. The PDF is drawn
+         here with the built-in Helvetica family, no external assets. */
+      var PDF_W = [278,278,355,556,556,889,667,180,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,222,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584];
+      function pdfNum(n) { return Math.round(n * 100) / 100; }
+      function pdfEsc(s) { return String(s).replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)"); }
+      function pdfTextW(s, size) {
+        var w = 0;
+        for (var i = 0; i < s.length; i++) { var c = s.charCodeAt(i); w += (c >= 32 && c <= 126) ? PDF_W[c - 32] : 556; }
+        return w * size / 1000;
       }
+      function stubPDFBytes(emp, entry) {
+        var chk = entry.check, calc = entry.calc, ytd = entry.ytd;
+        var per = entry.period || periodFor(chk.payDate);
+        var ytdEarn = entry.ytdEarnings || {};
+        var ops = [];
+        var PH = 792; /* page height, US Letter */
+        function col(hex) { return pdfNum(parseInt(hex.slice(0, 2), 16) / 255) + " " + pdfNum(parseInt(hex.slice(2, 4), 16) / 255) + " " + pdfNum(parseInt(hex.slice(4, 6), 16) / 255); }
+        function rect(x, yTop, w, h, hex) { ops.push(col(hex) + " rg " + pdfNum(x) + " " + pdfNum(PH - yTop - h) + " " + pdfNum(w) + " " + pdfNum(h) + " re f"); }
+        function strokeRect(x, yTop, w, h, hex) { ops.push(col(hex) + " RG 0.8 w " + pdfNum(x) + " " + pdfNum(PH - yTop - h) + " " + pdfNum(w) + " " + pdfNum(h) + " re S"); }
+        function text(s, x, yBaseTop, size, bold, hex, align) {
+          var w = pdfTextW(s, size), xx = x;
+          if (align === "r") xx = x - w; else if (align === "c") xx = x - w / 2;
+          ops.push("BT /" + (bold ? "F2" : "F1") + " " + size + " Tf " + col(hex) + " rg " + pdfNum(xx) + " " + pdfNum(PH - yBaseTop) + " Td (" + pdfEsc(s) + ") Tj ET");
+        }
+        var PURPLE = "4a0878", LAV = "e7dbf7", BAR = "e8e8eb", INK = "14101c", DEEP = "2c1150",
+            LBL = "4c445c", HDR = "6b617a", LILAC = "e2d4f7", LINE = "d9d2e6", BORD = "cfc6de", BARTX = "26222e";
+        var X0 = 48;
+        /* Header band */
+        rect(X0, 44, 516, 62, PURPLE);
+        text("Mike Mike's Mobile Mechanics", 62, 82, 16.5, true, "ffffff");
+        text("PAY STATEMENT", 550, 74, 13, true, "ffffff", "r");
+        text("Pay Date: " + fmtDateMDY(chk.payDate), 550, 94, 10, false, LILAC, "r");
+        /* Info columns */
+        function infoCol(x, title, rows, yTop) {
+          rect(x, yTop, 252, 19, BAR);
+          text(title, x + 8, yTop + 13.5, 8.5, true, BARTX);
+          rows.forEach(function (r, i) {
+            var yb = yTop + 35 + i * 17;
+            text(r[0], x, yb, 9.3, true, LBL);
+            text(r[1], x + 92, yb, 9.3, false, INK);
+          });
+          return yTop + 35 + (rows.length - 1) * 17;
+        }
+        var infoEnd = Math.max(
+          infoCol(X0, "EMPLOYEE INFORMATION", [["Name:", emp.name], ["Employee ID:", emp.employeeId || emp.id], ["Pay Period:", fmtDateMDY(per.start) + " - " + fmtDateMDY(per.end)]], 122),
+          infoCol(312, "PAYMENT INFORMATION", [["Method:", entry.method || emp.payMethod || ""], ["Check No.:", chk.checkNo || ""], ["Location:", entry.location || "Texas"]], 122));
+        var y = infoEnd + 20;
+        function sectionBar(title, yTop) { rect(X0, yTop, 516, 19, BAR); text(title, X0 + 8, yTop + 13.5, 8.5, true, BARTX); return yTop + 19; }
+        function tableHead(cols, yTop) {
+          cols.forEach(function (c) { if (c[0]) text(c[0], c[1], yTop + 17, 7.5, false, HDR, "r"); });
+          rect(X0, yTop + 22, 516, 1.2, LINE);
+          return yTop + 22;
+        }
+        /* Earnings */
+        y = sectionBar("EARNINGS", y);
+        y = tableHead([["", 0], ["RATE", 370], ["HOURS", 426], ["CURRENT", 494], ["YTD", 564]], y);
+        var rowY = y + 18;
+        calc.earnings.forEach(function (l) {
+          text(l.desc, X0, rowY, 9.5, false, INK);
+          text(l.rate == null ? "-" : (l.rateText || l.rate.toFixed(2)), 370, rowY, 9.5, false, INK, "r");
+          text(l.hours == null ? "-" : l.hours.toFixed(2), 426, rowY, 9.5, false, INK, "r");
+          text(money(l.amount), 494, rowY, 9.5, false, INK, "r");
+          text(money(ytdEarn[l.desc] || 0), 564, rowY, 9.5, false, INK, "r");
+          rowY += 18;
+        });
+        var grossTop = rowY - 10;
+        rect(X0, grossTop, 516, 22, LAV);
+        text("GROSS PAY", X0 + 8, grossTop + 15, 9.5, true, DEEP);
+        text(money(calc.gross), 494, grossTop + 15, 9.5, true, DEEP, "r");
+        text(money(ytd.gross), 564, grossTop + 15, 9.5, true, DEEP, "r");
+        /* Employee taxes */
+        y = sectionBar("EMPLOYEE TAXES", grossTop + 36);
+        y = tableHead([["CURRENT", 494], ["YTD", 564]], y);
+        rowY = y + 18;
+        var ded = calc.deductions;
+        [["Federal Income Tax", ded.federal, ytd.federal],
+         ["Social Security Tax (6.2%)", ded.socialSecurity, ytd.socialSecurity],
+         ["Medicare Tax (1.45%)", ded.medicare, ytd.medicare]].forEach(function (r) {
+          text(r[0], X0, rowY, 9.5, false, INK);
+          text(money(r[1]), 494, rowY, 9.5, false, INK, "r");
+          text(money(r[2]), 564, rowY, 9.5, false, INK, "r");
+          rowY += 18;
+        });
+        var dedTop = rowY - 10;
+        rect(X0, dedTop, 516, 22, LAV);
+        text("TOTAL DEDUCTIONS", X0 + 8, dedTop + 15, 9.5, true, DEEP);
+        text(money(calc.totalDeductions), 494, dedTop + 15, 9.5, true, DEEP, "r");
+        text(money(ytd.totalDeductions), 564, dedTop + 15, 9.5, true, DEEP, "r");
+        /* Net pay band */
+        var netTop = dedTop + 34;
+        rect(X0, netTop, 516, 30, PURPLE);
+        text("NET PAY", X0 + 8, netTop + 20, 12, true, "ffffff");
+        text(money(calc.net), 494, netTop + 20, 11.5, true, "ffffff", "r");
+        text(money(ytd.net), 564, netTop + 20, 11.5, true, "ffffff", "r");
+        /* Footer boxes */
+        var boxTop = netTop + 46, boxH = 56;
+        function footBox(x, title, lines) {
+          strokeRect(x, boxTop, 252, boxH, BORD);
+          rect(x, boxTop, 252, 15, BAR);
+          text(title, x + 8, boxTop + 11, 8, true, BARTX);
+          lines.forEach(function (s, i) { text(s, x + 8, boxTop + 30 + i * 14, 8.6, false, INK); });
+        }
+        var hrs = function (n) { return (Number(n) || 0).toFixed(2); };
+        footBox(X0, "W-4 INFORMATION", ["Filing Status: " + emp.filingStatus, "Total Dep. Amt: " + money(emp.depAmount || 0) + "  |  Add'l W/H: " + money(emp.addlWithholding || 0)]);
+        footBox(312, "LEAVE BALANCES", ["Vacation: " + hrs(emp.vacationHours) + " hrs  |  Paid Time Off: " + hrs(emp.ptoHours) + " hrs"]);
+        text("Generated from the Mike Mike's Mobile Mechanics Payroll Portal.", 306, boxTop + boxH + 26, 8, false, HDR, "c");
+        /* Assemble the PDF document */
+        var content = ops.join("\n");
+        var objs = [
+          "<< /Type /Catalog /Pages 2 0 R >>",
+          "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+          "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>",
+          "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
+          "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>",
+          "<< /Length " + content.length + " >>\nstream\n" + content + "\nendstream"
+        ];
+        var pdf = "%PDF-1.4\n", offsets = [], i, j, o;
+        for (i = 0; i < objs.length; i++) { offsets.push(pdf.length); pdf += (i + 1) + " 0 obj\n" + objs[i] + "\nendobj\n"; }
+        var xref = pdf.length;
+        pdf += "xref\n0 7\n0000000000 65535 f \n";
+        for (j = 0; j < offsets.length; j++) { o = String(offsets[j]); while (o.length < 10) o = "0" + o; pdf += o + " 00000 n \n"; }
+        pdf += "trailer\n<< /Size 7 /Root 1 0 R >>\nstartxref\n" + xref + "\n%%EOF";
+        var bytes = new Uint8Array(pdf.length);
+        for (i = 0; i < pdf.length; i++) bytes[i] = pdf.charCodeAt(i) & 0xff;
+        return bytes;
+      }
+
       /* ============ Save / share a stub file ============
-         Inside the app's phone webview, handing a blob: URL to a synthetic
-         download link is silently dropped, and jumping the frame itself to
-         a mailto:/sms: URL is blocked as a frame navigation. What works:
-         the system share sheet with a real File (Save to Files / Mail /
-         Messages) on phones that support it, and a real anchor element
-         clicked inside the tap handler for mailto:/sms:. Desktop browsers
-         keep the plain blob download. */
+         The stub travels as a PDF File — the one document type iOS passes
+         through the share sheet intact. (An HTML file comes back as a .txt
+         scrap holding only the share title, and a synthetic blob download
+         is dropped or opened as a black screen in phone webviews.) Share
+         data carries ONLY the file: no title/text item for iOS to save in
+         its place. On phones the share sheet is the handoff (Save to
+         Files / Mail / Messages); desktop browsers keep the plain blob
+         download, and email falls back to a real mailto: anchor clicked
+         inside the tap handler. */
       function isAppleMobile() {
         var ua = navigator.userAgent || "";
         return /iP(hone|ad|od)/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
@@ -741,7 +849,7 @@
         return isAppleMobile() || /Android/i.test(navigator.userAgent || "");
       }
       function stubFile(emp, entry) {
-        try { return new File([stubFileHTML(emp, entry)], stubFileName(emp, entry), { type: "text/html" }); }
+        try { return new File([stubPDFBytes(emp, entry)], stubFileName(emp, entry), { type: "application/pdf" }); }
         catch (e) { return null; }
       }
       function canShareFile(file) {
@@ -752,7 +860,7 @@
         if (s) s.textContent = msg;
       }
       function saveStubViaDownload(emp, entry) {
-        var blob = new Blob([stubFileHTML(emp, entry)], { type: "text/html;charset=utf-8" });
+        var blob = new Blob([stubPDFBytes(emp, entry)], { type: "application/pdf" });
         var url = URL.createObjectURL(blob);
         var a = document.createElement("a");
         a.href = url;
@@ -761,10 +869,10 @@
         setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
         setStubStatus("Download started — look for “" + stubFileName(emp, entry) + "” in your downloads.");
       }
-      function shareStubFile(emp, entry, title, statusMsg) {
+      function shareStubFile(emp, entry, statusMsg) {
         var file = stubFile(emp, entry);
         if (!canShareFile(file)) return false;
-        navigator.share({ files: [file], title: title }).then(function () {
+        navigator.share({ files: [file] }).then(function () {
           setStubStatus(statusMsg);
         }, function (err) {
           if (err && err.name === "AbortError") { setStubStatus(""); return; }
@@ -782,8 +890,8 @@
         document.body.removeChild(a);
       }
       function downloadStub(emp, entry) {
-        if (isMobileUA() && shareStubFile(emp, entry, "Pay stub — " + fmtDateMDY(entry.check.payDate),
-              "Share sheet opened — choose Save to Files to keep the stub on this device.")) return;
+        if (isMobileUA() && shareStubFile(emp, entry,
+              "Share sheet opened — choose Save to Files to keep the stub PDF on this device.")) return;
         saveStubViaDownload(emp, entry);
       }
 
@@ -799,23 +907,18 @@
           "Net pay: " + money(entry.calc.net);
       }
       function shareStubEmail(emp, entry) {
-        var subject = "Pay Stub — " + fmtDateMDY(entry.check.payDate);
-        if (isAppleMobile() && shareStubFile(emp, entry, subject,
-              "Share sheet opened — choose Mail and the stub file is attached for you.")) return;
-        saveStubViaDownload(emp, entry); /* the stub file downloads so it can be attached before sending */
-        var body = stubSummaryText(emp, entry) + "\n\nThe pay stub file was just downloaded to this device — please attach it to this email before sending.";
+        if (isMobileUA() && shareStubFile(emp, entry,
+              "Share sheet opened — choose Mail and the stub PDF is attached for you.")) return;
+        saveStubViaDownload(emp, entry); /* the stub PDF downloads so it can be attached before sending */
+        var subject = "Pay Stub - " + fmtDateMDY(entry.check.payDate);
+        var body = stubSummaryText(emp, entry) + "\n\nThe pay stub PDF was just downloaded to this device — please attach it to this email before sending.";
         openExternal("mailto:" + encodeURIComponent(emp.email || "") + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body));
-        setStubStatus("Your mail app should be opening with the stub summary filled in — attach the downloaded stub file before sending.");
+        setStubStatus("Your mail app should be opening with the stub summary filled in — attach the downloaded stub PDF before sending.");
       }
       function shareStubText(emp, entry) {
+        if (shareStubFile(emp, entry,
+              "Share sheet opened — choose Messages to text the stub PDF.")) return;
         var text = stubSummaryText(emp, entry);
-        var file = stubFile(emp, entry);
-        if (canShareFile(file)) {
-          navigator.share({ files: [file], title: "Pay Stub — " + fmtDateMDY(entry.check.payDate), text: text }).then(function () {
-            setStubStatus("Share sheet opened — choose Messages to text the stub.");
-          }, function (err) { if (!(err && err.name === "AbortError")) setStubStatus(""); });
-          return;
-        }
         var num = "";
         if (session && session.role === "admin" && emp.phone) num = emp.phone.replace(/[^0-9+]/g, "");
         var sep = isAppleMobile() ? "&" : "?";
